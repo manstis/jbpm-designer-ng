@@ -424,7 +424,23 @@ function loadProcess(containerId, jsonModel) {
     var stencilset = ORYX.Utils.getParamFromUrl('stencilset') || ORYX.CONFIG.SSET;
     var editor_parameters = {
         id:containerId,
-        model:jsonModel,
+        model:jsonModel.evalJSON(),
+        fullscreen:false,
+        stencilset:{
+            url:stencilset
+        }
+    };
+
+    //Launch Oryx
+    var editor = new ORYX.Editor(editor_parameters);
+    ORYX.EDITOR = editor;
+};
+
+function newProcess(containerId) {
+    //Stencil set
+    var stencilset = ORYX.Utils.getParamFromUrl('stencilset') || ORYX.CONFIG.SSET;
+    var editor_parameters = {
+        id:containerId,
         fullscreen:false,
         stencilset:{
             url:stencilset

@@ -17,13 +17,11 @@
 package org.kie.jbpm.designer.client;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -37,9 +35,6 @@ public class DesignerView
         implements DesignerPresenter.View,
                    RequiresResize {
 
-    @Inject
-    private Bootstrap bootstrap;
-
     private DesignerPresenter presenter;
 
     //The HTML elementID of the Oryx container - this needs to be unique to support multiple instances
@@ -47,19 +42,11 @@ public class DesignerView
 
     private VerticalPanel vp = new VerticalPanel();
 
+    private String jsonModel = "";
+
     @PostConstruct
     public void init() {
         initWidget( vp );
-        bootstrap.init();
-    }
-
-    @Override
-    public void init( final DesignerPresenter presenter ) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void setJsonModel( final String jsonModel ) {
 
         //Bootstrap controls (hack for now to ensure start-up scripts are loaded and ran)
         final HorizontalPanel buttonsContainer = new HorizontalPanel();
@@ -81,6 +68,16 @@ public class DesignerView
             }
         } );
         buttonsContainer.add( loadProcessButton );
+
+        final Button newProcessButton = new Button( "New process" );
+        newProcessButton.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                newProcess( panelId );
+            }
+        } );
+        buttonsContainer.add( newProcessButton );
+
         vp.add( buttonsContainer );
 
         //Otyx container
@@ -89,7 +86,16 @@ public class DesignerView
         designerDiv.setId( panelId );
         html.getElement().insertFirst( designerDiv );
         vp.add( html );
+    }
 
+    @Override
+    public void init( final DesignerPresenter presenter ) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setJsonModel( final String jsonModel ) {
+        this.jsonModel = jsonModel;
     }
 
     private native void bootstrap()  /*-{
@@ -100,6 +106,11 @@ public class DesignerView
                                      final String jsonModel )  /*-{
         $wnd.Kickstart.load();
         $wnd.loadProcess(panelId, jsonModel);
+    }-*/;
+
+    private native void newProcess( final String panelId )  /*-{
+        $wnd.Kickstart.load();
+        $wnd.newProcess(panelId);
     }-*/;
 
     @Override

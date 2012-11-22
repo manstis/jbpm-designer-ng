@@ -1,5 +1,6 @@
 package org.kie.jbpm.designer.client;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -30,9 +31,17 @@ public class DesignerPresenter {
     private View view;
 
     @Inject
+    private Bootstrap bootstrap;
+
+    @Inject
     private Caller<JSONService> jsonService;
 
     private Path path;
+
+    @PostConstruct
+    private void bootstrapOryxScripts() {
+        bootstrap.init();
+    }
 
     @OnStart
     public void onStart( final Path path ) {

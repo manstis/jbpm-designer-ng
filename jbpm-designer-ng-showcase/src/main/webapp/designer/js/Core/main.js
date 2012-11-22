@@ -230,8 +230,7 @@ ORYX.Editor = {
 		var layoutHeight 	= 800;
 	
 		var canvasParent	= this.getCanvas().rootNode.parentNode;
-		
-		
+
 		this.centerContentPanel = new Ext.Panel({
 			autoScroll: true,
 			cmargins: {left:0, right:0},

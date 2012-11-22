@@ -9,8 +9,7 @@ import org.kie.commons.validation.Preconditions;
 import org.kie.jbpm.designer.server.MockServletContext;
 import org.kie.jbpm.designer.service.JSONService;
 import org.kie.jbpm.designer.web.profile.IDiagramProfile;
-import org.kie.jbpm.designer.web.profile.impl.DefaultProfileImpl;
-import org.kie.jbpm.designer.web.profile.impl.ProfileServiceImpl;
+import org.kie.jbpm.designer.web.profile.impl.JbpmProfileImpl;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
@@ -35,7 +34,7 @@ public class DefaultJSONService implements JSONService {
         final ServletContext context = new MockServletContext();
 
         //Get the default profile handler (hard coded for now, could be a parameter)
-        final IDiagramProfile profile = new DefaultProfileImpl( context );
+        final IDiagramProfile profile = new JbpmProfileImpl( context );
 
         //Convert to JSON
         final String json = profile.createUnmarshaller().parseModel( bpmn,
