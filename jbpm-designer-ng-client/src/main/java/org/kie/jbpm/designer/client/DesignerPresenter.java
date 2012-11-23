@@ -16,7 +16,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.UberView;
 
 @Dependent
-@WorkbenchEditor(identifier = "jbpm.designer", fileTypes = "bpmn")
+@WorkbenchEditor(identifier = "jbpm.designer", fileTypes = "bpmn2")
 public class DesignerPresenter {
 
     public interface View

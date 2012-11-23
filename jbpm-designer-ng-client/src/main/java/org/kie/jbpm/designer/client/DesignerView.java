@@ -37,8 +37,9 @@ public class DesignerView
 
     private DesignerPresenter presenter;
 
-    //The HTML elementID of the Oryx container - this needs to be unique to support multiple instances
-    private final String panelId = "designer-panel";
+    //[manstis] The HTML elementID of the Oryx container - this needs to be unique to support multiple
+    // instances. This value however is also serialized in the BPMN2 definition as the "resourceId".
+    private final String panelId = "Definition";
 
     private VerticalPanel vp = new VerticalPanel();
 
