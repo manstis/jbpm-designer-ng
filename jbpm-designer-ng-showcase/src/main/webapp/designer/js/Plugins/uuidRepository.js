@@ -95,7 +95,20 @@ ORYX.Plugins.UUIDRepositorySave = ORYX.Plugins.AbstractPlugin.extend({
 		};
 		this.facade.offer(autosavecfg);
 
-		// ask before closing the window
+        //[manstis] Save back to VFS
+        vfssavecfg = {
+            'name': ORYX.I18N.Save.save,
+            'group': ORYX.I18N.Save.group,
+            'functionality': this.saveToVfs.bind(this),
+            'icon': ORYX.PATH + "images/disk.png",
+            'description': "Save back to VFS",
+            'index': 3,
+            'minShape': 0,
+            'maxShape': 0
+        };
+        this.facade.offer(vfssavecfg);
+
+        // ask before closing the window
 		this.changeDifference = 0;		
 		this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_EXECUTE, function(){ this.changeDifference++; });
 		this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, function(){this.changeDifference++; });
@@ -186,6 +199,19 @@ ORYX.Plugins.UUIDRepositorySave = ORYX.Plugins.AbstractPlugin.extend({
 		this.hideSaveStatus(savePlugin, asynchronous);
 		return true;
 	},
+
+    /**
+     * [manstis] Save the model to VFS (note SVG is not handled).
+     */
+    saveToVfs: function() {
+        this.showSaveStatus(this, false);
+        var serializedDOM = Ext.encode(this.facade.getJSON());
+
+        designerPresenterOnSave(serializedDOM);
+
+        this.hideSaveStatus(this, false);
+        return true;
+    },
 	
 	/**
 	 * Shows the saving status
@@ -419,6 +445,7 @@ window.onOryxResourcesLoaded = function() {
 //    ORYX.EDITOR = editor;
 };
 
+//[manstis] - Push an existing process into Oryx
 function loadProcess(containerId, jsonModel) {
     //Stencil set
     var stencilset = ORYX.Utils.getParamFromUrl('stencilset') || ORYX.CONFIG.SSET;
@@ -436,6 +463,7 @@ function loadProcess(containerId, jsonModel) {
     ORYX.EDITOR = editor;
 };
 
+//[manstis] - Initialize Oryx with an empty process
 function newProcess(containerId) {
     //Stencil set
     var stencilset = ORYX.Utils.getParamFromUrl('stencilset') || ORYX.CONFIG.SSET;

@@ -23,12 +23,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.kie.jbpm.designer.server.MockServletContext;
 import org.kie.jbpm.designer.web.profile.IDiagramProfile;
 import org.kie.jbpm.designer.web.repository.IUUIDBasedRepository;
 import org.kie.jbpm.designer.web.repository.IUUIDBasedRepositoryService;
@@ -118,8 +120,12 @@ public class UUIDBasedRepositoryServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         String actionParam = req.getParameter("action");
         String preProcessingParam = req.getParameter("pp");
+
+        //[manstis] - Use MockServletContext as profiles are now stored on classpath
+        final ServletContext context = new MockServletContext();
+
         if(actionParam != null && actionParam.equals("toXML")) {
-            IDiagramProfile profile = ServletUtil.getProfile(req, req.getParameter("profile"), getServletContext());
+            IDiagramProfile profile = ServletUtil.getProfile(req, req.getParameter("profile"), context);
             String json = req.getParameter("data");
             String xml = _repository.toXML(json, profile, preProcessingParam);
             StringWriter output = new StringWriter();
@@ -130,7 +136,7 @@ public class UUIDBasedRepositoryServlet extends HttpServlet {
             resp.getWriter().print(output.toString());
         } else if(actionParam != null && actionParam.equals("checkErrors")) { 
         	String retValue = "false";
-        	IDiagramProfile profile = ServletUtil.getProfile(req, req.getParameter("profile"), getServletContext());
+        	IDiagramProfile profile = ServletUtil.getProfile(req, req.getParameter("profile"), context);
             String json = req.getParameter("data");
             try {
 				String xmlOut = profile.createMarshaller().parseModel(json, preProcessingParam);

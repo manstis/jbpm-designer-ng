@@ -46,9 +46,12 @@ public class ProcessInfoServlet extends HttpServlet {
         IDiagramProfile profile = ServletUtil.getProfile(req, profileName, context);
 
         try {
-        	// find out what package the uuid belongs to
-        	String[] packageAssetInfo = ServletUtil.findPackageAndAssetInfo(uuid, profile);
-        	String packageName = packageAssetInfo[0];
+            //[manstis] Mocked
+            // find out what package the uuid belongs to
+            //String[] packageAssetInfo = ServletUtil.findPackageAndAssetInfo(uuid, profile);
+            String[] packageAssetInfo = new String[] {"Mock package", "Mock asset"};
+
+            String packageName = packageAssetInfo[0];
         	String assetName = packageAssetInfo[1];
         	Map<String, String> processInfo = getProcessInfo(packageName, assetName, uuid, profile);
         	resp.setCharacterEncoding("UTF-8");
@@ -86,40 +89,45 @@ public class ProcessInfoServlet extends HttpServlet {
 		infoMap.put("Last Modified", "");
 		infoMap.put("Comment", "");
 		infoMap.put("Version", "");
-		
-		String assetInfoURL = ExternalInfo.getExternalProtocol(profile)
-                + "://"
-                + ExternalInfo.getExternalHost(profile)
-                + "/"
-                + profile.getExternalLoadURLSubdomain().substring(0,
-                        profile.getExternalLoadURLSubdomain().indexOf("/"))
-                + "/rest/packages/" + URLEncoder.encode(packageName, "UTF-8") + "/assets/" + assetName;
-		XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader reader = factory
-               .createXMLStreamReader(ServletUtil.getInputStreamForURL(assetInfoURL,
-                       "GET", profile), "UTF-8");
-        while (reader.hasNext()) {
-            if (reader.next() == XMLStreamReader.START_ELEMENT) {
-                if ("format".equals(reader.getLocalName())) {
-                    infoMap.put("Format", reader.getElementText());
-                }
-                if ("checkInComment".equals(reader.getLocalName())) {
-                    infoMap.put("Comment", reader.getElementText());
-                }
-                if ("created".equals(reader.getLocalName())) {
-                    infoMap.put("Created", reader.getElementText());
-                }
-                if ("createdBy".equals(reader.getLocalName())) {
-                    infoMap.put("Created By", reader.getElementText());
-                }
-                if ("lastModified".equals(reader.getLocalName())) {
-                    infoMap.put("Last Modified", reader.getElementText());
-                }
-                if ("version".equals(reader.getLocalName())) {
-                    infoMap.put("Version", reader.getElementText());
-                }
-            }
+
+        //[manstis] Mocked
+        for(String key : infoMap.keySet()) {
+            infoMap.put(key, "Mock");
         }
+
+//		String assetInfoURL = ExternalInfo.getExternalProtocol(profile)
+//                + "://"
+//                + ExternalInfo.getExternalHost(profile)
+//                + "/"
+//                + profile.getExternalLoadURLSubdomain().substring(0,
+//                        profile.getExternalLoadURLSubdomain().indexOf("/"))
+//                + "/rest/packages/" + URLEncoder.encode(packageName, "UTF-8") + "/assets/" + assetName;
+//		XMLInputFactory factory = XMLInputFactory.newInstance();
+//        XMLStreamReader reader = factory
+//               .createXMLStreamReader(ServletUtil.getInputStreamForURL(assetInfoURL,
+//                       "GET", profile), "UTF-8");
+//        while (reader.hasNext()) {
+//            if (reader.next() == XMLStreamReader.START_ELEMENT) {
+//                if ("format".equals(reader.getLocalName())) {
+//                    infoMap.put("Format", reader.getElementText());
+//                }
+//                if ("checkInComment".equals(reader.getLocalName())) {
+//                    infoMap.put("Comment", reader.getElementText());
+//                }
+//                if ("created".equals(reader.getLocalName())) {
+//                    infoMap.put("Created", reader.getElementText());
+//                }
+//                if ("createdBy".equals(reader.getLocalName())) {
+//                    infoMap.put("Created By", reader.getElementText());
+//                }
+//                if ("lastModified".equals(reader.getLocalName())) {
+//                    infoMap.put("Last Modified", reader.getElementText());
+//                }
+//                if ("version".equals(reader.getLocalName())) {
+//                    infoMap.put("Version", reader.getElementText());
+//                }
+//            }
+//        }
         return infoMap;
 	}
 }

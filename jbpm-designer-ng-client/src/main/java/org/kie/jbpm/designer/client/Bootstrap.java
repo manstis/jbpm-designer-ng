@@ -18,6 +18,8 @@ import com.google.gwt.dom.client.StyleElement;
  * org.kie.drools.designer.web.profile.impl.DefaultProfileImpl) need access to the Servlet Context to load the
  * profile configuration files from the webapp. A fuller implementation of this bootstrap would callback
  * to the server to get the necessary configuration parameters.
+ *
+ * This is a hard-coded representation of the jBPM profile.
  */
 @ApplicationScoped
 public class Bootstrap {

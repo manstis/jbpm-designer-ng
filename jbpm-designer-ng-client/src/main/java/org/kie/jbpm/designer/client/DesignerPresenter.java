@@ -4,11 +4,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.jbpm.designer.service.JSONService;
+import org.kie.jbpm.designer.service.DesignerAssetService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -34,27 +36,45 @@ public class DesignerPresenter {
     private Bootstrap bootstrap;
 
     @Inject
-    private Caller<JSONService> jsonService;
+    private Caller<DesignerAssetService> assetService;
 
     private Path path;
 
     @PostConstruct
     private void bootstrapOryxScripts() {
         bootstrap.init();
+        bridgeOnSaveMethod();
     }
 
     @OnStart
     public void onStart( final Path path ) {
         this.path = path;
 
-        jsonService.call( new RemoteCallback<String>() {
+        assetService.call( new RemoteCallback<String>() {
             @Override
             public void callback( final String json ) {
                 if ( json != null ) {
                     view.setJsonModel( json );
                 }
             }
-        } ).getJsonModel( path );
+        } ).loadJsonModel( path );
+    }
+
+    public native void bridgeOnSaveMethod() /*-{
+        var that = this;
+        $wnd.designerPresenterOnSave = $entry(function (jsonModel) {
+            return that.@org.kie.jbpm.designer.client.DesignerPresenter::onSave(Ljava/lang/String;)(jsonModel);
+        });
+    }-*/;
+
+    public void onSave( final String jsonModel ) {
+        assetService.call( new RemoteCallback<Void>() {
+            @Override
+            public void callback( final Void response ) {
+                //Nothing to do at the moment... error handling would be nice
+            }
+        } ).saveJsonModel( this.path,
+                           jsonModel );
     }
 
     @WorkbenchPartTitle
